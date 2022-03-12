@@ -81,7 +81,7 @@ namespace DevAna.Api.Controllers
 
         }
 
-        private async Task<string> GenerateJWT(string email)
+        private async Task<LoginResponseViewModel> GenerateJWT(string email)
         {
             var user = await _userManager.FindByNameAsync(email);
             var claims = await _userManager.GetClaimsAsync(user);
@@ -115,8 +115,23 @@ namespace DevAna.Api.Controllers
 
             var encodedToken = tokenHandler.WriteToken(token);
 
-            return encodedToken;
+            var response = new LoginResponseViewModel
+            {
+                AccessToken = encodedToken,
+                ExpiresIn = TimeSpan.FromHours(_appSettings.ExpiracaoHoras).TotalSeconds,
+                UserToken = new UserTokenViewModel
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Claims = claims.Select(x => new ClaimViewModel
+                    {
+                        Type = x.Type,
+                        Value = x.Value
+                    })
+                }
+            };
 
+            return response;
         }
 
         private static long ToUnixEpochDate(DateTime date)
