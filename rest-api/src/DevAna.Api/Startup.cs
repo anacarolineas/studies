@@ -1,7 +1,9 @@
 ﻿using DevAna.Api.Configuration;
 using DevAna.Data.Context;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace DevAna.Api
 {
@@ -14,12 +16,11 @@ namespace DevAna.Api
             _configuration = configuration;
         }
 
-        public void Configure(WebApplication app, IWebHostEnvironment environment)
+        public void Configure(WebApplication app, IWebHostEnvironment environment, IApiVersionDescriptionProvider provider)
         {
             if (app.Environment.IsDevelopment())
             {
-                app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UserSwaggerConfig(provider);
             }
             else
             {
@@ -67,7 +68,9 @@ namespace DevAna.Api
                 options.SuppressModelStateInvalidFilter = true;
             });
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+
+            services.AddSwaggerConfig();
+
             services.ResolveDependencies();
         }
     }

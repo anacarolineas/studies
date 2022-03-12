@@ -3,6 +3,9 @@ using DevAna.Business.Notificacoes;
 using DevAna.Business.Services;
 using DevAna.Data.Context;
 using DevAna.Data.Repository;
+using Microsoft.AspNet.Identity;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace DevAna.Api.Configuration
 {
@@ -21,6 +24,10 @@ namespace DevAna.Api.Configuration
             services.AddScoped<IEnderecoRepository, EnderecoRepository>();
 
             services.AddScoped<INotificador, Notificador>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
 
             return services;
