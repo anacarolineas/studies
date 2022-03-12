@@ -21,9 +21,13 @@ namespace DevAna.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            else
+            {
+                app.UseHsts();
+            }
 
-            app.UseStaticFiles();
             app.UseRouting();
+            app.UseHttpsRedirection();
             app.UseCors();
 
             app.UseEndpoints(endpoints =>
@@ -34,6 +38,19 @@ namespace DevAna.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApiVersioning(options =>
+            {
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.DefaultApiVersion = new ApiVersion(1, 0); // 1.0
+                options.ReportApiVersions = true;
+            });
+
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+
             services.AddDbContext<MeuDbContext>(options =>
             {
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"));
